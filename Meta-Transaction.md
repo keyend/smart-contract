@@ -1,14 +1,14 @@
-中继交易（Meta-Transaction）
+## 中继交易（Meta-Transaction）
 中继交易是一种模式，其中一个账户（称为中继者）支付gas费用来提交另一个账户签名的交易。以下是如何实现这种机制的基本步骤：
 
 A账户签名交易数据：生成未签名的交易数据，并用A账户的私钥对其签名。
 B账户发送中继交易：B账户将签名后的交易数据发送到中继智能合约，智能合约验证A账户的签名，并代表A账户执行交易，费用由B账户支付。
 实现步骤
 部署中继智能合约
-首先，需要部署一个中继智能合约。这是一个简单的例子：
+首先，需要部署一个中继智能合约。这是一个简单的例子：<br />
 
 solidity
-複製程式碼
+```
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
@@ -29,10 +29,12 @@ contract MetaTransaction {
         return returnData;
     }
 }
+```
 编译并部署这个合约后，我们将得到中继智能合约的地址。
 
 服务端生成签名交易数据
 使用Node.js生成签名的交易数据：
+```
 const Web3 = require('web3');
 const web3 = new Web3('https://polygon-mainnet.g.alchemy.com/v2/YOUR_ALCHEMY_API_KEY');
 
@@ -90,8 +92,10 @@ createSignedMetaTransaction().then(metaTx => {
   console.log('Meta Transaction:', metaTx);
   // 将 metaTx 数据发送给客户端（例如通过HTTP响应）
 });
+```
 客户端发送中继交易
 客户端使用中继智能合约发送已签名的交易数据：
+```
 const Web3 = require('web3');
 const web3 = new Web3('https://polygon-mainnet.g.alchemy.com/v2/YOUR_ALCHEMY_API_KEY');
 
@@ -180,5 +184,6 @@ async function sendMetaTransaction() {
 }
 
 sendMetaTransaction();
-总结
+```
+## 总结
 通过这种方法，客户端B可以发送由A账户签名的交易，并支付交易的gas费用。这种中继交易模式特别适用于不希望每个用户都支付gas费用的DApp。需要注意的是，中继交易合约需要部署并且逻辑合约需要支持中继交易模式。
